@@ -21,25 +21,31 @@ public class IngredientCategoryServiceImpl implements IIngredientCategoryService
     public IngredientCategoryServiceImpl(IngredientCategoryRepository ingredientCategoryRepository,
                                          IngredientCategoryMapper ingredientCategoryMapper) {
         this.ingredientCategoryRepository = ingredientCategoryRepository;
-        this.ingredientCategoryMapper=ingredientCategoryMapper;
+        this.ingredientCategoryMapper = ingredientCategoryMapper;
     }
 
     @Override
-    public DtoIngredientCategoryResponse createIngredientCategory(DtoIngredientCategoryRequest dtoIngredientCategoryRequest){
-        if (ingredientCategoryRepository.existsByIngredientCategoryNameIgnoreCase(dtoIngredientCategoryRequest.getIngredientCategoryName())){
+    public DtoIngredientCategoryResponse createIngredientCategory(DtoIngredientCategoryRequest dtoIngredientCategoryRequest) {
+        if (ingredientCategoryRepository.existsByIngredientCategoryNameIgnoreCase(dtoIngredientCategoryRequest.getIngredientCategoryName())) {
             throw new ResourceNotUniqueException("Ingredient Category Already Exists");
         }
-        IngredientCategory ingredientCategory=ingredientCategoryMapper.toIngredientCategory(dtoIngredientCategoryRequest);
-        IngredientCategory saveIngredientCategory= ingredientCategoryRepository.save(ingredientCategory);
+        IngredientCategory ingredientCategory = ingredientCategoryMapper.toIngredientCategory(dtoIngredientCategoryRequest);
+        IngredientCategory saveIngredientCategory = ingredientCategoryRepository.save(ingredientCategory);
         return ingredientCategoryMapper.toDtoIngredientCategoryResponse(saveIngredientCategory);
     }
 
     @Override
-    public List<DtoIngredientCategoryResponse> getAllIngredientCategory(){
-        List<IngredientCategory> ingredientList= ingredientCategoryRepository.findAll();
-        if (ingredientList.isEmpty()){
-            throw  new ResourceNotFoundException("Ingredient Category Not Found");
+    public List<DtoIngredientCategoryResponse> getAllIngredientCategory() {
+        List<IngredientCategory> ingredientList = ingredientCategoryRepository.findAll();
+        if (ingredientList.isEmpty()) {
+            throw new ResourceNotFoundException("Ingredient Category Not Found");
         }
         return ingredientCategoryMapper.toDtoIngredientCategoryListResponse(ingredientList);
+    }
+
+    @Override
+    public IngredientCategory getIngredientCategoryById(Long id) {
+        return ingredientCategoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient Category Not Found"));
     }
 }

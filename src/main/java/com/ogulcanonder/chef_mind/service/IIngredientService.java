@@ -9,6 +9,6 @@ public interface IIngredientService {
     public DtoIngredientResponse createIngredient(DtoIngredientRequest dtoIngredientRequest);
     public List<DtoIngredientResponse>getAllIngredient();
     public  DtoIngredientResponse findByIngredient(Long id);
-    public DtoIngredientResponse updateIngredient(DtoIngredientRequest dtoIngredientRequest, Long id);
-    public String deleteIngredient (Long id);
+    public void updateIngredient(DtoIngredientRequest dtoIngredientRequest, Long id);
+    public void deleteIngredient (Long id);
 }
