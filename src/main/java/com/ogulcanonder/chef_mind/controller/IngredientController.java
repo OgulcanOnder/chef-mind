@@ -3,6 +3,7 @@ package com.ogulcanonder.chef_mind.controller;
 import com.ogulcanonder.chef_mind.dto.request.DtoIngredientRequest;
 import com.ogulcanonder.chef_mind.dto.response.DtoIngredientResponse;
 import com.ogulcanonder.chef_mind.service.IIngredientService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ingredient")
+@RequestMapping("/api/v1/ingredient")
 public class IngredientController {
 
     private final IIngredientService ingredientService;
@@ -19,34 +20,34 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<DtoIngredientResponse>createIngredient(@RequestBody DtoIngredientRequest dtoIngredientRequest){
-        DtoIngredientResponse saveIngredient = ingredientService.createIngredient(dtoIngredientRequest);
+    @PostMapping
+    public ResponseEntity<DtoIngredientResponse>createIngredient(@Valid @RequestBody DtoIngredientRequest dtoIngredientRequest){
+        DtoIngredientResponse saveIngredient = ingredientService.create(dtoIngredientRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(saveIngredient);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<DtoIngredientResponse>> getAllIngredient(){
-        List<DtoIngredientResponse> getAllIngredient=ingredientService.getAllIngredient();
+        List<DtoIngredientResponse> getAllIngredient=ingredientService.getAll();
         return ResponseEntity.status(HttpStatus.OK).body(getAllIngredient);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DtoIngredientResponse>findByIngredientId(@PathVariable(name = "id")Long id){
-        DtoIngredientResponse ingredientResponse=ingredientService.findByIngredient(id);
+        DtoIngredientResponse ingredientResponse=ingredientService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(ingredientResponse);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<DtoIngredientResponse> updateIngredient (@RequestBody DtoIngredientRequest dtoIngredientRequest,
-                                                                   @PathVariable (name = "id")Long id){
-        DtoIngredientResponse updateIngredient= ingredientService.updateIngredient(dtoIngredientRequest,id);
-        return ResponseEntity.status(HttpStatus.OK).body(updateIngredient);
+    @PutMapping("/{id}")
+        public ResponseEntity<Void> updateIngredient(@Valid @RequestBody DtoIngredientRequest dtoIngredientRequest,
+                                                     @PathVariable (name = "id")Long id){
+             ingredientService.updateNameAndCategoryId(dtoIngredientRequest,id);
+            return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String>deleteIngredient(@PathVariable(name = "id")Long id){
-        ingredientService.deleteIngredient(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Component with ID:"+id+" was DELETED");
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void>deleteIngredient(@PathVariable(name = "id")Long id){
+        ingredientService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

@@ -3,72 +3,70 @@ package com.ogulcanonder.chef_mind.service.impl;
 import com.ogulcanonder.chef_mind.dto.request.DtoIngredientRequest;
 import com.ogulcanonder.chef_mind.dto.response.DtoIngredientResponse;
 import com.ogulcanonder.chef_mind.exception.ResourceNotFoundException;
-import com.ogulcanonder.chef_mind.exception.ResourceNotUniqueException;
 import com.ogulcanonder.chef_mind.mapper.IngredientMapper;
 import com.ogulcanonder.chef_mind.model.Ingredient;
 import com.ogulcanonder.chef_mind.model.IngredientCategory;
-import com.ogulcanonder.chef_mind.repository.IngredientCategoryRepository;
 import com.ogulcanonder.chef_mind.repository.IngredientRepository;
+import com.ogulcanonder.chef_mind.service.IIngredientCategoryService;
 import com.ogulcanonder.chef_mind.service.IIngredientService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
 @Service
 public class IngredientServiceImpl implements IIngredientService {
     private final IngredientRepository ingredientRepository;
-    private final IngredientCategoryRepository ingredientCategoryRepository;
     private final IngredientMapper ingredientMapper;
+    private final IIngredientCategoryService ingredientCategoryService;
 
-    public IngredientServiceImpl(IngredientRepository ingredientRepository, IngredientCategoryRepository ingredientCategoryRepository, IngredientMapper ingredientMapper){
-        this.ingredientRepository=ingredientRepository;
-        this.ingredientCategoryRepository=ingredientCategoryRepository;
-        this.ingredientMapper=ingredientMapper;
+    public IngredientServiceImpl(IngredientRepository ingredientRepository, IngredientMapper ingredientMapper, IIngredientCategoryService ingredientCategoryService) {
+        this.ingredientRepository = ingredientRepository;
+        this.ingredientMapper = ingredientMapper;
+        this.ingredientCategoryService = ingredientCategoryService;
     }
+
     @Override
-    public DtoIngredientResponse createIngredient(DtoIngredientRequest dtoIngredientRequest){
-        if (ingredientRepository.existsByNameIgnoreCase(dtoIngredientRequest.getName())){
-            throw  new ResourceNotUniqueException("Ingredient Already Exits");
+    public DtoIngredientResponse create(DtoIngredientRequest dtoIngredientRequest) {
+        try {
+            Ingredient ingredient = ingredientMapper.toIngredient(dtoIngredientRequest);
+            IngredientCategory ingredientCategory = ingredientCategoryService.getIngredientCategoryById(dtoIngredientRequest.getIngredientCategoryId());
+            ingredient.setIngredientCategory(ingredientCategory);
+            return ingredientMapper.toDtoIngredientResponse(ingredientRepository.save(ingredient));
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Ingredient already exists");
+        } catch (Exception e) {
+            throw new RuntimeException("An unexpected error occurred.");
         }
-        Ingredient ingredient=ingredientMapper.toIngredient(dtoIngredientRequest);
-        IngredientCategory ingredientCategory=ingredientCategoryRepository.findById(dtoIngredientRequest.getIngredientCategoryId())
-                .orElseThrow(()-> new ResourceNotUniqueException("Ingredient Category Not Found With Id:" +dtoIngredientRequest.getIngredientCategoryId()));
-        ingredient.setIngredientCategory(ingredientCategory);
-        return ingredientMapper.toDtoIngredientResponse(ingredientRepository.save(ingredient));
     }
 
     @Override
-    public List<DtoIngredientResponse> getAllIngredient() {
-        List<Ingredient> ingredientList=ingredientRepository.findAll();
-        if (ingredientList.isEmpty()){
-            throw  new ResourceNotFoundException("Ingredient Not Found");
+    public List<DtoIngredientResponse> getAll() {
+        List<Ingredient> ingredientList = ingredientRepository.findAll();
+        if (ObjectUtils.isEmpty(ingredientList)) {
+            throw new ResourceNotFoundException("Ingredient Not Found");
         }
         return ingredientMapper.toDtoIngredientListResponse(ingredientList);
     }
 
     @Override
-    public DtoIngredientResponse findByIngredient(Long id) {
-        Ingredient ingredient=ingredientRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Not Found Id:"+id));
+    public DtoIngredientResponse findById(Long id) {
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Not Found Id:" + id));
         return ingredientMapper.toDtoIngredientResponse(ingredient);
     }
 
     @Override
-    public DtoIngredientResponse updateIngredient(DtoIngredientRequest dtoIngredientRequest, Long id) {
-        Ingredient ingredient=ingredientRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Not Found Id:"+id));
-        ingredientMapper.updateFromRequest(dtoIngredientRequest,ingredient);
-        Ingredient updateIngredient=ingredientRepository.save(ingredient);
-        return ingredientMapper.toDtoIngredientResponse(updateIngredient);
+    public void updateNameAndCategoryId(DtoIngredientRequest dtoIngredientRequest, Long id) {
+        ingredientRepository.updateNameAndCategoryId(id, dtoIngredientRequest.getName(), dtoIngredientRequest.getIngredientCategoryId());
     }
 
     @Override
-    public String deleteIngredient(Long id) {
-        if (findByIngredient(id)==null){
-            throw  new ResourceNotFoundException("Not Found Id:"+id);
+    public void deleteById(Long id) {
+        int deletedRows = ingredientRepository.deleteIngredientById(id);
+        if (deletedRows == 0) {
+            throw new ResourceNotFoundException("Ingredient Not Found");
         }
-        Ingredient deleteIngredient=ingredientMapper.toIngredientResponse(findByIngredient(id));
-        ingredientRepository.delete(deleteIngredient);
-        return "Component with ID:"+id+"was DELETED";
     }
 }
