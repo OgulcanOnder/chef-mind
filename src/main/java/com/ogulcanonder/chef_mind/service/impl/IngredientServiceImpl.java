@@ -28,7 +28,7 @@ public class IngredientServiceImpl implements IIngredientService {
     }
 
     @Override
-    public DtoIngredientResponse createIngredient(DtoIngredientRequest dtoIngredientRequest) {
+    public DtoIngredientResponse create(DtoIngredientRequest dtoIngredientRequest) {
         try {
             Ingredient ingredient = ingredientMapper.toIngredient(dtoIngredientRequest);
             IngredientCategory ingredientCategory = ingredientCategoryService.getIngredientCategoryById(dtoIngredientRequest.getIngredientCategoryId());
@@ -42,7 +42,7 @@ public class IngredientServiceImpl implements IIngredientService {
     }
 
     @Override
-    public List<DtoIngredientResponse> getAllIngredient() {
+    public List<DtoIngredientResponse> getAll() {
         List<Ingredient> ingredientList = ingredientRepository.findAll();
         if (ObjectUtils.isEmpty(ingredientList)) {
             throw new ResourceNotFoundException("Ingredient Not Found");
@@ -51,20 +51,20 @@ public class IngredientServiceImpl implements IIngredientService {
     }
 
     @Override
-    public DtoIngredientResponse findByIngredient(Long id) {
+    public DtoIngredientResponse findById(Long id) {
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not Found Id:" + id));
         return ingredientMapper.toDtoIngredientResponse(ingredient);
     }
 
     @Override
-    public void updateIngredient(DtoIngredientRequest dtoIngredientRequest, Long id) {
-        ingredientRepository.updateIngredient(id, dtoIngredientRequest.getName(), dtoIngredientRequest.getIngredientCategoryId());
+    public void updateNameAndCategoryId(DtoIngredientRequest dtoIngredientRequest, Long id) {
+        ingredientRepository.updateNameAndCategoryId(id, dtoIngredientRequest.getName(), dtoIngredientRequest.getIngredientCategoryId());
     }
 
     @Override
-    public void deleteIngredient(Long id) {
-        int deletedRows = ingredientRepository.deleteIngredient(id);
+    public void deleteById(Long id) {
+        int deletedRows = ingredientRepository.deleteIngredientById(id);
         if (deletedRows == 0) {
             throw new ResourceNotFoundException("Ingredient Not Found");
         }

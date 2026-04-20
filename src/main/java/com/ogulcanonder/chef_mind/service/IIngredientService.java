@@ -6,9 +6,9 @@ import com.ogulcanonder.chef_mind.dto.response.DtoIngredientResponse;
 import java.util.List;
 
 public interface IIngredientService {
-    public DtoIngredientResponse createIngredient(DtoIngredientRequest dtoIngredientRequest);
-    public List<DtoIngredientResponse>getAllIngredient();
-    public  DtoIngredientResponse findByIngredient(Long id);
-    public void updateIngredient(DtoIngredientRequest dtoIngredientRequest, Long id);
-    public void deleteIngredient (Long id);
+    public DtoIngredientResponse create(DtoIngredientRequest dtoIngredientRequest);
+    public List<DtoIngredientResponse>getAll();
+    public  DtoIngredientResponse findById(Long id);
+    public void updateNameAndCategoryId(DtoIngredientRequest dtoIngredientRequest, Long id);
+    public void deleteById (Long id);
 }

@@ -22,32 +22,32 @@ public class IngredientController {
 
     @PostMapping
     public ResponseEntity<DtoIngredientResponse>createIngredient(@Valid @RequestBody DtoIngredientRequest dtoIngredientRequest){
-        DtoIngredientResponse saveIngredient = ingredientService.createIngredient(dtoIngredientRequest);
+        DtoIngredientResponse saveIngredient = ingredientService.create(dtoIngredientRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(saveIngredient);
     }
 
     @GetMapping
     public ResponseEntity<List<DtoIngredientResponse>> getAllIngredient(){
-        List<DtoIngredientResponse> getAllIngredient=ingredientService.getAllIngredient();
+        List<DtoIngredientResponse> getAllIngredient=ingredientService.getAll();
         return ResponseEntity.status(HttpStatus.OK).body(getAllIngredient);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DtoIngredientResponse>findByIngredientId(@PathVariable(name = "id")Long id){
-        DtoIngredientResponse ingredientResponse=ingredientService.findByIngredient(id);
+        DtoIngredientResponse ingredientResponse=ingredientService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(ingredientResponse);
     }
 
     @PutMapping("/{id}")
-        public ResponseEntity<Void> updateIngredient (@Valid @RequestBody DtoIngredientRequest dtoIngredientRequest,
-                @PathVariable (name = "id")Long id){
-             ingredientService.updateIngredient(dtoIngredientRequest,id);
+        public ResponseEntity<Void> updateIngredient(@Valid @RequestBody DtoIngredientRequest dtoIngredientRequest,
+                                                     @PathVariable (name = "id")Long id){
+             ingredientService.updateNameAndCategoryId(dtoIngredientRequest,id);
             return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void>deleteIngredient(@PathVariable(name = "id")Long id){
-        ingredientService.deleteIngredient(id);
+        ingredientService.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
