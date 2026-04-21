@@ -3,12 +3,13 @@ package com.ogulcanonder.chef_mind.controller;
 import com.ogulcanonder.chef_mind.dto.request.DtoRecipeIngredientRequest;
 import com.ogulcanonder.chef_mind.dto.response.DtoRecipeIngredientResponse;
 import com.ogulcanonder.chef_mind.service.IRecipeIngredientService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/recipe-ingredients")
+@RequestMapping("api/v1/recipe-ingredients")
 public class RecipeIngredientController {
 
     private final IRecipeIngredientService recipeIngredientService;
@@ -18,19 +19,19 @@ public class RecipeIngredientController {
     }
 
     @PostMapping
-    public ResponseEntity<DtoRecipeIngredientResponse>create(@RequestBody DtoRecipeIngredientRequest dtoRecipeIngredientRequest){
+    public ResponseEntity<DtoRecipeIngredientResponse>create(@Valid @RequestBody DtoRecipeIngredientRequest dtoRecipeIngredientRequest){
         DtoRecipeIngredientResponse dtoRecipeIngredientResponse=recipeIngredientService.create(dtoRecipeIngredientRequest);
         return ResponseEntity.status(HttpStatus.OK).body(dtoRecipeIngredientResponse);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<DtoRecipeIngredientResponse>update(@RequestBody DtoRecipeIngredientRequest dtoRecipeIngredientRequest,
+    @PutMapping("/{id}")
+    public ResponseEntity<Void>update(@Valid @RequestBody DtoRecipeIngredientRequest dtoRecipeIngredientRequest,
                                                              @PathVariable(name = "id") Long id){
-        DtoRecipeIngredientResponse dtoRecipeIngredientResponse=recipeIngredientService.update(dtoRecipeIngredientRequest,id);
-        return ResponseEntity.status(HttpStatus.OK).body(dtoRecipeIngredientResponse);
+        recipeIngredientService.update(dtoRecipeIngredientRequest,id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String>delete(@PathVariable(name = "id")Long id){
         recipeIngredientService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body("Component with ID:"+id+" was DELETED");

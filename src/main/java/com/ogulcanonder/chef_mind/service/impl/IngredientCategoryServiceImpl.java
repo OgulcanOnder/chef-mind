@@ -3,12 +3,13 @@ package com.ogulcanonder.chef_mind.service.impl;
 import com.ogulcanonder.chef_mind.dto.request.DtoIngredientCategoryRequest;
 import com.ogulcanonder.chef_mind.dto.response.DtoIngredientCategoryResponse;
 import com.ogulcanonder.chef_mind.exception.ResourceNotFoundException;
-import com.ogulcanonder.chef_mind.exception.ResourceNotUniqueException;
 import com.ogulcanonder.chef_mind.mapper.IngredientCategoryMapper;
 import com.ogulcanonder.chef_mind.model.IngredientCategory;
 import com.ogulcanonder.chef_mind.repository.IngredientCategoryRepository;
 import com.ogulcanonder.chef_mind.service.IIngredientCategoryService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -25,27 +26,49 @@ public class IngredientCategoryServiceImpl implements IIngredientCategoryService
     }
 
     @Override
-    public DtoIngredientCategoryResponse createIngredientCategory(DtoIngredientCategoryRequest dtoIngredientCategoryRequest) {
-        if (ingredientCategoryRepository.existsByIngredientCategoryNameIgnoreCase(dtoIngredientCategoryRequest.getIngredientCategoryName())) {
-            throw new ResourceNotUniqueException("Ingredient Category Already Exists");
+    public DtoIngredientCategoryResponse create(DtoIngredientCategoryRequest dtoIngredientCategoryRequest) {
+        try {
+            IngredientCategory ingredientCategory = ingredientCategoryMapper.toIngredientCategory(dtoIngredientCategoryRequest);
+            return ingredientCategoryMapper.toDtoIngredientCategoryResponse(ingredientCategoryRepository.save(ingredientCategory));
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Ingredient Category already exists");
+        } catch (Exception e) {
+            throw new RuntimeException("An unexpected error occurred");
         }
-        IngredientCategory ingredientCategory = ingredientCategoryMapper.toIngredientCategory(dtoIngredientCategoryRequest);
-        IngredientCategory saveIngredientCategory = ingredientCategoryRepository.save(ingredientCategory);
-        return ingredientCategoryMapper.toDtoIngredientCategoryResponse(saveIngredientCategory);
+
     }
 
     @Override
-    public List<DtoIngredientCategoryResponse> getAllIngredientCategory() {
+    public List<DtoIngredientCategoryResponse> getAll() {
         List<IngredientCategory> ingredientList = ingredientCategoryRepository.findAll();
-        if (ingredientList.isEmpty()) {
+        if (ObjectUtils.isEmpty(ingredientList)) {
             throw new ResourceNotFoundException("Ingredient Category Not Found");
         }
         return ingredientCategoryMapper.toDtoIngredientCategoryListResponse(ingredientList);
     }
 
     @Override
-    public IngredientCategory getIngredientCategoryById(Long id) {
+    public IngredientCategory findById(Long id) {
         return ingredientCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ingredient Category Not Found"));
+    }
+
+    @Override
+    public void updateById(Long id, DtoIngredientCategoryRequest dtoIngredientCategoryRequest) {
+        try {
+            ingredientCategoryRepository.updateById(id, dtoIngredientCategoryRequest.getIngredientCategoryName());
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Ingredient Category already exists");
+        } catch (Exception e) {
+            throw new RuntimeException("An unexpected error occurred");
+        }
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        int deletedRows = ingredientCategoryRepository.deleteByIngredientCategoryId(id);
+        if (deletedRows == 0) {
+            throw new ResourceNotFoundException("Ingredient Category Not Found");
+        }
     }
 }

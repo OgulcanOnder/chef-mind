@@ -5,8 +5,8 @@ import jakarta.validation.constraints.Size;
 
 public class DtoRecipeRequest {
 
-    @NotBlank
-    @Size(min=2, max=100)
+    @NotBlank(message = "Recipe name cannot be empty")
+    @Size(max = 255,message = "Recipe name cannot exceed 255 characters")
     private String name;
 
     public String getName() {
