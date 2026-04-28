@@ -4,8 +4,12 @@ import jakarta.validation.constraints.NotNull;
 
 public class DtoRecipeIngredientRequest {
 
-    @NotNull
+    @NotNull(message = "Ingredient cannot be null")
     private Long ingredientId;
+    @NotNull(message = "Recipe cannot be null")
+    private Long recipeId;
+    @NotNull(message = "Required cannot be null")
+    private boolean required;
 
     public Long getRecipeId() {
         return recipeId;
@@ -14,10 +18,6 @@ public class DtoRecipeIngredientRequest {
     public void setRecipeId(Long recipeId) {
         this.recipeId = recipeId;
     }
-
-    @NotNull
-    private Long recipeId;
-    private boolean required;
 
     public Long getIngredientId() {
         return ingredientId;

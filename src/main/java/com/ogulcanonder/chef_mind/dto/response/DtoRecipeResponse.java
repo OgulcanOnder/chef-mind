@@ -6,7 +6,7 @@ public class DtoRecipeResponse {
 
     private Long id;
     private String name;
-    private List<DtoRecipeIngredientResponse> ingredients;
+    private List<DtoIngredientResponse> ingredients;
 
     public Long getId() {
         return id;
@@ -24,11 +24,11 @@ public class DtoRecipeResponse {
         this.name = name;
     }
 
-    public List<DtoRecipeIngredientResponse> getIngredients() {
+    public List<DtoIngredientResponse> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<DtoRecipeIngredientResponse> ingredients) {
+    public void setIngredients(List<DtoIngredientResponse> ingredients) {
         this.ingredients = ingredients;
     }
 }

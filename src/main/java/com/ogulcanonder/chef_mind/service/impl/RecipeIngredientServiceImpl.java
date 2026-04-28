@@ -7,10 +7,11 @@ import com.ogulcanonder.chef_mind.mapper.RecipeIngredientMapper;
 import com.ogulcanonder.chef_mind.model.Ingredient;
 import com.ogulcanonder.chef_mind.model.Recipe;
 import com.ogulcanonder.chef_mind.model.RecipeIngredient;
-import com.ogulcanonder.chef_mind.repository.IngredientRepository;
 import com.ogulcanonder.chef_mind.repository.RecipeIngredientRepository;
-import com.ogulcanonder.chef_mind.repository.RecipeRepository;
+import com.ogulcanonder.chef_mind.service.IIngredientService;
 import com.ogulcanonder.chef_mind.service.IRecipeIngredientService;
+import com.ogulcanonder.chef_mind.service.IRecipeService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,46 +19,52 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class RecipeIngredientServiceImpl implements IRecipeIngredientService {
     private final RecipeIngredientRepository recipeIngredientRepository;
-    private final RecipeRepository recipeRepository;
-    private final IngredientRepository ingredientRepository;
     private final RecipeIngredientMapper recipeIngredientMapper;
+    private final IRecipeService recipeService;
+    private final IIngredientService ingredientService;
 
     public RecipeIngredientServiceImpl(RecipeIngredientRepository recipeIngredientRepository,
-                                       RecipeRepository recipeRepository,
-                                       IngredientRepository ingredientRepository,
-                                       RecipeIngredientMapper recipeIngredientMapper) {
+                                       RecipeIngredientMapper recipeIngredientMapper,
+                                       IRecipeService recipeService,
+                                       IIngredientService ingredientService) {
         this.recipeIngredientRepository = recipeIngredientRepository;
-        this.recipeRepository = recipeRepository;
-        this.ingredientRepository = ingredientRepository;
         this.recipeIngredientMapper = recipeIngredientMapper;
+        this.recipeService = recipeService;
+        this.ingredientService = ingredientService;
     }
 
     @Override
     public DtoRecipeIngredientResponse create(DtoRecipeIngredientRequest dtoRecipeIngredientRequest) {
-        Recipe recipe=recipeRepository.findById(dtoRecipeIngredientRequest.getRecipeId())
-                .orElseThrow(()-> new ResourceNotFoundException("Recipe Not Found"));
-        Ingredient ingredient=ingredientRepository.findById(dtoRecipeIngredientRequest.getIngredientId())
-                .orElseThrow(()->new ResourceNotFoundException("Ingredient Not Found"));
-        RecipeIngredient entity=recipeIngredientMapper.toRecipeIngredient(dtoRecipeIngredientRequest,recipe,ingredient);
-        RecipeIngredient saved=recipeIngredientRepository.save(entity);
-        return recipeIngredientMapper.toDtoRecipeIngredientResponse(saved);
+        try {
+            Recipe recipe = recipeService.findRecipeById(dtoRecipeIngredientRequest.getRecipeId());
+            Ingredient ingredient = ingredientService.findIngredientById(dtoRecipeIngredientRequest.getIngredientId());
+            RecipeIngredient recipeIngredient = recipeIngredientMapper.toRecipeIngredient(dtoRecipeIngredientRequest, recipe, ingredient);
+            return recipeIngredientMapper.toDtoRecipeIngredientResponse(recipeIngredientRepository.save(recipeIngredient));
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Recipe and Ingredient matching available");
+        } catch (Exception e) {
+            throw new RuntimeException("An unexpected error occurred");
+        }
+
     }
 
     @Override
-    public DtoRecipeIngredientResponse update(DtoRecipeIngredientRequest dtoRecipeIngredientRequest, Long id) {
-        RecipeIngredient recipeIngredient = recipeIngredientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Recipe Match Not Found"));
-
-        recipeIngredientMapper.toUpdateRecipeIngredient(dtoRecipeIngredientRequest,recipeIngredient);
-        RecipeIngredient updated=recipeIngredientRepository.save(recipeIngredient);
-        return recipeIngredientMapper.toDtoUpdateRecipeIngredient(updated);
+    public void update(DtoRecipeIngredientRequest dtoRecipeIngredientRequest, Long id) {
+        try {
+            recipeIngredientRepository.updateById(dtoRecipeIngredientRequest.getIngredientId(), dtoRecipeIngredientRequest.getRecipeId(), dtoRecipeIngredientRequest.isRequired(), id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Recipe and Ingredient matching available");
+        } catch (Exception e) {
+            throw new RuntimeException("An unexpected error occurred");
+        }
     }
 
     @Override
     public void delete(Long id) {
-        RecipeIngredient recipeIngredient=recipeIngredientRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Recipe Match Not Found"));
-        recipeIngredientRepository.delete(recipeIngredient);
+        int deletedRows = recipeIngredientRepository.deleteRecipeIngredientById(id);
+        if (deletedRows == 0) {
+            throw new ResourceNotFoundException("Recipe and Ingredient matching not found");
+        }
     }
 
 }
