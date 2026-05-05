@@ -21,7 +21,8 @@ public class IngredientServiceImpl implements IIngredientService {
     private final IngredientMapper ingredientMapper;
     private final IIngredientCategoryService ingredientCategoryService;
 
-    public IngredientServiceImpl(IngredientRepository ingredientRepository, IngredientMapper ingredientMapper, IIngredientCategoryService ingredientCategoryService) {
+    public IngredientServiceImpl(IngredientRepository ingredientRepository, IngredientMapper ingredientMapper,
+                                 IIngredientCategoryService ingredientCategoryService) {
         this.ingredientRepository = ingredientRepository;
         this.ingredientMapper = ingredientMapper;
         this.ingredientCategoryService = ingredientCategoryService;
@@ -31,7 +32,8 @@ public class IngredientServiceImpl implements IIngredientService {
     public DtoIngredientResponse create(DtoIngredientRequest dtoIngredientRequest) {
         try {
             Ingredient ingredient = ingredientMapper.toIngredient(dtoIngredientRequest);
-            IngredientCategory ingredientCategory = ingredientCategoryService.findById(dtoIngredientRequest.getIngredientCategoryId());
+            IngredientCategory ingredientCategory = ingredientCategoryService.findById(
+                    dtoIngredientRequest.getIngredientCategoryId());
             ingredient.setIngredientCategory(ingredientCategory);
             return ingredientMapper.toDtoIngredientResponse(ingredientRepository.save(ingredient));
         } catch (DataIntegrityViolationException e) {
@@ -60,8 +62,9 @@ public class IngredientServiceImpl implements IIngredientService {
     @Override
     public void updateNameAndCategoryId(DtoIngredientRequest dtoIngredientRequest, Long id) {
         try {
-            ingredientRepository.updateNameAndCategoryId(id, dtoIngredientRequest.getName(), dtoIngredientRequest.getIngredientCategoryId());
-        }catch (DataIntegrityViolationException e) {
+            ingredientRepository.updateNameAndCategoryId(
+                    id, dtoIngredientRequest.getName(), dtoIngredientRequest.getIngredientCategoryId());
+        } catch (DataIntegrityViolationException e) {
             throw new RuntimeException("Ingredient already exists");
         } catch (Exception e) {
             throw new RuntimeException("An unexpected error occurred.");

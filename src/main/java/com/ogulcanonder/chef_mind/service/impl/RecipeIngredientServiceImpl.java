@@ -38,8 +38,10 @@ public class RecipeIngredientServiceImpl implements IRecipeIngredientService {
         try {
             Recipe recipe = recipeService.findRecipeById(dtoRecipeIngredientRequest.getRecipeId());
             Ingredient ingredient = ingredientService.findIngredientById(dtoRecipeIngredientRequest.getIngredientId());
-            RecipeIngredient recipeIngredient = recipeIngredientMapper.toRecipeIngredient(dtoRecipeIngredientRequest, recipe, ingredient);
-            return recipeIngredientMapper.toDtoRecipeIngredientResponse(recipeIngredientRepository.save(recipeIngredient));
+            RecipeIngredient recipeIngredient = recipeIngredientMapper.toRecipeIngredient(
+                    dtoRecipeIngredientRequest, recipe, ingredient);
+            return recipeIngredientMapper.toDtoRecipeIngredientResponse(
+                    recipeIngredientRepository.save(recipeIngredient));
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("Recipe and Ingredient matching available");
         } catch (Exception e) {
@@ -51,7 +53,9 @@ public class RecipeIngredientServiceImpl implements IRecipeIngredientService {
     @Override
     public void update(DtoRecipeIngredientRequest dtoRecipeIngredientRequest, Long id) {
         try {
-            recipeIngredientRepository.updateById(dtoRecipeIngredientRequest.getIngredientId(), dtoRecipeIngredientRequest.getRecipeId(), dtoRecipeIngredientRequest.isRequired(), id);
+            recipeIngredientRepository.updateById(
+                    dtoRecipeIngredientRequest.getIngredientId(), dtoRecipeIngredientRequest.getRecipeId(),
+                    dtoRecipeIngredientRequest.isRequired(), id);
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("Recipe and Ingredient matching available");
         } catch (Exception e) {

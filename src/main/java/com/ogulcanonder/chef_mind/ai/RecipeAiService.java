@@ -5,7 +5,7 @@ import com.ogulcanonder.chef_mind.exception.ResourceNotFoundException;
 import com.ogulcanonder.chef_mind.model.Recipe;
 import com.ogulcanonder.chef_mind.model.RecipeIngredient;
 import com.ogulcanonder.chef_mind.repository.RecipeRepository;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 

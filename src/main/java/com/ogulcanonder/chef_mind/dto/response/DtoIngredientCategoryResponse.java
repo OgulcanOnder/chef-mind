@@ -1,9 +1,5 @@
 package com.ogulcanonder.chef_mind.dto.response;
 
-import com.ogulcanonder.chef_mind.model.Ingredient;
-
-import java.util.List;
-
 public class DtoIngredientCategoryResponse {
     private Long id;
     private String ingredientCategoryName;
