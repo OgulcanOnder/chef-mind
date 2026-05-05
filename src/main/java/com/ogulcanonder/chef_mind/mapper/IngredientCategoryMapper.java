@@ -11,6 +11,8 @@ import java.util.List;
 public interface IngredientCategoryMapper {
     IngredientCategory toIngredientCategory(DtoIngredientCategoryRequest dtoIngredientCategoryRequest);
     DtoIngredientCategoryResponse toDtoIngredientCategoryResponse(IngredientCategory ingredientCategory);
-    List<IngredientCategory> toIngredientCategoryList(List<DtoIngredientCategoryRequest> dtoIngredientCategoryRequestList);
-    List<DtoIngredientCategoryResponse> toDtoIngredientCategoryListResponse(List<IngredientCategory> ingredientCategoryList);
+    List<IngredientCategory> toIngredientCategoryList(
+            List<DtoIngredientCategoryRequest> dtoIngredientCategoryRequestList);
+    List<DtoIngredientCategoryResponse> toDtoIngredientCategoryListResponse(
+            List<IngredientCategory> ingredientCategoryList);
 }

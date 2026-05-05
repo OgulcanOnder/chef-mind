@@ -48,7 +48,8 @@ public class RecipeServiceImpl implements IRecipeService {
 
     @Override
     public DtoRecipeResponse findById(Long id) {
-        Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not Found Id: " + id));
+        Recipe recipe = recipeRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Not Found Id: " + id));
         return recipeMapper.toDtoRecipeResponse(recipe);
     }
 

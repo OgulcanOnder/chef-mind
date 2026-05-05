@@ -1,6 +1,14 @@
 package com.ogulcanonder.chef_mind.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -17,14 +25,14 @@ public class IngredientCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "ingredient_category_name", unique = true,nullable = false)
+    @Column(name = "ingredient_category_name", unique = true, nullable = false)
     private String ingredientCategoryName;
 
     @OneToMany(mappedBy = "ingredientCategory",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.LAZY)
-    private List<Ingredient>ingredientList=new ArrayList<>();
+    private List<Ingredient>ingredientList = new ArrayList<>();
 
 
     public Long getId() {

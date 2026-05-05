@@ -26,10 +26,11 @@ public class IngredientCategoryServiceImpl implements IIngredientCategoryService
     }
 
     @Override
-    public DtoIngredientCategoryResponse create(DtoIngredientCategoryRequest dtoIngredientCategoryRequest) {
+    public DtoIngredientCategoryResponse create(DtoIngredientCategoryRequest request) {
         try {
-            IngredientCategory ingredientCategory = ingredientCategoryMapper.toIngredientCategory(dtoIngredientCategoryRequest);
-            return ingredientCategoryMapper.toDtoIngredientCategoryResponse(ingredientCategoryRepository.save(ingredientCategory));
+            IngredientCategory ingredientCategory = ingredientCategoryMapper.toIngredientCategory(request);
+            return ingredientCategoryMapper.toDtoIngredientCategoryResponse(
+                    ingredientCategoryRepository.save(ingredientCategory));
         } catch (DataIntegrityViolationException e) {
             throw new RuntimeException("Ingredient Category already exists");
         } catch (Exception e) {

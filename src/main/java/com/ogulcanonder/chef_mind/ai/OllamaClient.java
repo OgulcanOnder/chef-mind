@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 @RequiredArgsConstructor
 public class OllamaClient {
-    private final RestTemplate restTemplate=new RestTemplate();
+    private final RestTemplate restTemplate = new RestTemplate();
     @Value("${ollama.url}")
     private String ollamaUrl;
 

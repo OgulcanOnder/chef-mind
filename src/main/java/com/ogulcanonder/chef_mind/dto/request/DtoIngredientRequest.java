@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 
 public class DtoIngredientRequest {
     @NotBlank(message = "Name cannot be empty")
-    @Size(max=255,message = "Name cannot exceed 255 characters")
+    @Size(max = 255, message = "Name cannot exceed 255 characters")
     private String name;
     @NotNull(message = "Ingredient category cannot be null ")
     private Long ingredientCategoryId;

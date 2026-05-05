@@ -3,9 +3,9 @@ package com.ogulcanonder.chef_mind.dto.response;
 import java.util.List;
 
 public class DtoRecipeAiResponse {
-        private String description;
-        private List<String> steps;
-        private List<String> alternatives;
+    private String description;
+    private List<String> steps;
+    private List<String> alternatives;
 
     public String getDescription() {
         return description;

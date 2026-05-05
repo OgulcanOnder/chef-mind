@@ -11,7 +11,7 @@ public interface RecipeIngredientRepository extends JpaRepository<RecipeIngredie
     @Modifying
     @Transactional
     @Query("UPDATE RecipeIngredient ri SET ri.ingredient.id=?1,ri.recipe.id=?2,ri.required=?3 WHERE ri.id=?4 ")
-    void updateById(Long ingredientId, Long recipeId,boolean required, Long id);
+    void updateById(Long ingredientId, Long recipeId, boolean required, Long id);
 
     @Modifying
     @Transactional
