@@ -1,6 +1,7 @@
 package com.ogulcanonder.chef_mind.controller;
 
 import com.ogulcanonder.chef_mind.ai.RecipeAiService;
+import com.ogulcanonder.chef_mind.dto.request.DtoRecipeAiRequest;
 import com.ogulcanonder.chef_mind.dto.request.DtoRecipeRequest;
 import com.ogulcanonder.chef_mind.dto.response.DtoRecipeAiResponse;
 import com.ogulcanonder.chef_mind.dto.response.DtoRecipeResponse;
@@ -65,5 +66,12 @@ public class RecipeController {
     @GetMapping("/{id}/ai")
     public ResponseEntity<DtoRecipeAiResponse>generateRecipe(@PathVariable(name = "id") Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(recipeAiService.generateRecipeAI(id));
+    }
+
+    @PostMapping("/ai/generate")
+    public ResponseEntity<DtoRecipeAiResponse> generateRecipeByIngredients(
+            @RequestBody @Valid DtoRecipeAiRequest dtoRecipeAiRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(recipeAiService
+                .generateRecipeByIngredients(dtoRecipeAiRequest));
     }
 }

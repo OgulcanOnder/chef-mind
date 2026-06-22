@@ -1,5 +1,6 @@
 package com.ogulcanonder.chef_mind.ai;
 
+import com.ogulcanonder.chef_mind.dto.request.DtoRecipeAiRequest;
 import com.ogulcanonder.chef_mind.dto.response.DtoRecipeAiResponse;
 import com.ogulcanonder.chef_mind.exception.ResourceNotFoundException;
 import com.ogulcanonder.chef_mind.model.Recipe;
@@ -23,14 +24,11 @@ public class RecipeAiService {
     }
 
     public DtoRecipeAiResponse generateRecipeAI(Long recipeId) {
-        // 1️⃣ Recipe entity’sini DB’den çek
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe not found"));
 
-        // 2️⃣ RecipeIngredient listesini al
         List<RecipeIngredient> recipeIngredients = recipe.getRecipeIngredients();
 
-        // 3️⃣ Required ve optional malzemeleri ayır
         String requiredIngredients = recipeIngredients.stream()
                 .filter(RecipeIngredient::isRequired)
                 .map(ri -> ri.getIngredient().getName())
@@ -41,7 +39,6 @@ public class RecipeAiService {
                 .map(ri -> ri.getIngredient().getName())
                 .collect(Collectors.joining(", "));
 
-        // 4️⃣ Dinamik prompt oluştur
         String prompt = """
                 Recipe Name: %s
                 Ingredients:
@@ -124,12 +121,37 @@ public class RecipeAiService {
                     Do not include text outside JSON.
                 """.formatted(recipe.getName(), requiredIngredients, optionalIngredients);
 
-        // 5️⃣ AI’dan response al
         String aiResponse = ollamaClient.generate(prompt);
 
-        System.out.println(aiResponse);
+        return parseAiResponse(aiResponse);
+    }
 
-        // 6️⃣ JSON parse ve DTO’ya map
+    public DtoRecipeAiResponse generateRecipeByIngredients(DtoRecipeAiRequest dtoRecipeAiRequest) {
+        List<String>ingredients = dtoRecipeAiRequest.getIngredients();
+        String prompt = """
+            You are a professional chef. Based on the following ingredients, generate a detailed step-by-step recipe.
+            
+            The ingredients below may be in Turkish. Translate them to English accurately before using them 
+            in the recipe.
+            
+            Ingredients: %s
+            
+            Respond ONLY with a valid JSON object. No explanation, no markdown, no extra text.
+            
+            Use this exact JSON structure:
+            {
+              "description": "string - recipe name and brief description",
+              "steps": [
+                "Step 1: ...",
+                "Step 2: ..."
+              ],
+              "alternatives": [
+                "You can replace X with Y",
+                "For a vegan version, ..."
+              ]
+            }
+            """.formatted(ingredients);
+        String aiResponse = ollamaClient.generate(prompt);
         return parseAiResponse(aiResponse);
     }
 
