@@ -1,31 +1,14 @@
 package com.ogulcanonder.chef_mind.dto.request;
 
-public class DtoOllamaRequest {
-    private String model;
-    private String prompt;
-    private boolean stream = false;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getPrompt() {
-        return prompt;
-    }
-
-    public void setPrompt(String prompt) {
-        this.prompt = prompt;
-    }
-
-    public boolean isStream() {
-        return stream;
-    }
-
-    public void setStream(boolean stream) {
-        this.stream = stream;
-    }
+public record DtoOllamaRequest(
+        @NotBlank(message = "Model cannot be empty")
+        String model,
+        @NotBlank(message = "Prompt cannot be empty")
+        String prompt,
+        @NotNull(message = "Stream cannot be null")
+        boolean stream
+) {
 }

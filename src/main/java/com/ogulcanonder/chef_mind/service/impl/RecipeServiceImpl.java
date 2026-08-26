@@ -57,7 +57,7 @@ public class RecipeServiceImpl implements IRecipeService {
     @Transactional
     public void updateById(DtoRecipeRequest dtoRecipeRequest, Long id) {
         try {
-            recipeRepository.updateById(id, dtoRecipeRequest.getName());
+            recipeRepository.updateById(id, dtoRecipeRequest.name());
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("Recipe already exists");
         } catch (Exception e) {

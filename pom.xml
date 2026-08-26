@@ -13,19 +13,6 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>chef-mind</name>
     <description>Choose your products and learn your meal.</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
     <properties>
         <java.version>21</java.version>
     </properties>
@@ -90,6 +77,10 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>6.0.3</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
     </dependencies>
     <build>

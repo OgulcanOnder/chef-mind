@@ -57,7 +57,7 @@ public class IngredientCategoryServiceImpl implements IIngredientCategoryService
     @Override
     public void updateById(Long id, DtoIngredientCategoryRequest dtoIngredientCategoryRequest) {
         try {
-            ingredientCategoryRepository.updateById(id, dtoIngredientCategoryRequest.getIngredientCategoryName());
+            ingredientCategoryRepository.updateById(id, dtoIngredientCategoryRequest.ingredientCategoryName());
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("Ingredient Category already exists");
         } catch (Exception e) {
