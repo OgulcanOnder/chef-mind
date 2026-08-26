@@ -21,10 +21,7 @@ public class OllamaClient {
 
     public String generate(String prompt) {
 
-        DtoOllamaRequest request = new DtoOllamaRequest();
-        request.setModel(model);
-        request.setPrompt(prompt);
-        request.setStream(false);
+        DtoOllamaRequest request = new DtoOllamaRequest(model, prompt, false);
 
         HttpEntity<DtoOllamaRequest> entity = new HttpEntity<>(request);
 
@@ -35,6 +32,6 @@ public class OllamaClient {
                         DtoOllamaResponse.class
                 );
 
-        return response.getBody().getResponse();
+        return response.getBody().response();
     }
 }

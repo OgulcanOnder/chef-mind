@@ -1,30 +1,9 @@
 package com.ogulcanonder.chef_mind.dto.response;
 
-public class DtoIngredientResponse {
-    private Long id;
-    private String name;
-    private Long ingredientCategoryId;
+public record DtoIngredientResponse(
+        Long id,
+        String name,
+        Long ingredientCategoryId
 
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getIngredientCategoryId() {
-        return ingredientCategoryId;
-    }
-
-    public void setIngredientCategoryId(Long ingredientCategoryId) {
-        this.ingredientCategoryId = ingredientCategoryId;
-    }
+) {
 }

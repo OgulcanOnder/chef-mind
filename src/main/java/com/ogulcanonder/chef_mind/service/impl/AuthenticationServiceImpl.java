@@ -29,10 +29,10 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     @Override
     public DtoUserResponse register(DtoRegisterUserRequest dtoRegisterUserRequest) {
         Locale trLocale = Locale.of("tr", "TR");
-        String name = dtoRegisterUserRequest.getName().trim().toUpperCase(trLocale);
-        String surname = dtoRegisterUserRequest.getSurname().trim().toUpperCase(trLocale);
-        String username = dtoRegisterUserRequest.getUsername().trim().toLowerCase(Locale.ENGLISH);
-        String email = dtoRegisterUserRequest.getEmail().trim().toLowerCase(Locale.ENGLISH);
+        String name = dtoRegisterUserRequest.name().trim().toUpperCase(trLocale);
+        String surname = dtoRegisterUserRequest.surname().trim().toUpperCase(trLocale);
+        String username = dtoRegisterUserRequest.username().trim().toLowerCase(Locale.ENGLISH);
+        String email = dtoRegisterUserRequest.email().trim().toLowerCase(Locale.ENGLISH);
         if (userService.existsByEmail(email)) {
             throw new BadCredentialsException("Email already exists");
         }
@@ -44,7 +44,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
                 .surname(surname)
                 .username(username)
                 .email(email)
-                .password(passwordEncoder.encode(dtoRegisterUserRequest.getPassword()))
+                .password(passwordEncoder.encode(dtoRegisterUserRequest.password()))
                 .isAccountNonExpired(true)
                 .isAccountNonLocked(true)
                 .isCredentialsNonExpired(true)

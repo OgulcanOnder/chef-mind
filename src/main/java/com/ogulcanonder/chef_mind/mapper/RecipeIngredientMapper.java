@@ -20,6 +20,8 @@ public interface RecipeIngredientMapper {
 
     @Mapping(source = "ingredient.id", target = "ingredientId")
     @Mapping(source = "ingredient.name", target = "ingredientName")
+    @Mapping(source = "recipe.id", target = "recipeId")
+    @Mapping(source = "recipe.name", target = "recipeName")
     DtoRecipeIngredientResponse toDtoRecipeIngredientResponse(RecipeIngredient recipeIngredient);
 
     @Mapping(target = "id", ignore = true)

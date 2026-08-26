@@ -127,7 +127,7 @@ public class RecipeAiService {
     }
 
     public DtoRecipeAiResponse generateRecipeByIngredients(DtoRecipeAiRequest dtoRecipeAiRequest) {
-        List<String>ingredients = dtoRecipeAiRequest.getIngredients();
+        List<String>ingredients = dtoRecipeAiRequest.ingredients();
         String prompt = """
             You are a professional chef. Based on the following ingredients, generate a detailed step-by-step recipe.
             

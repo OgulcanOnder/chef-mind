@@ -33,7 +33,7 @@ public class IngredientServiceImpl implements IIngredientService {
         try {
             Ingredient ingredient = ingredientMapper.toIngredient(dtoIngredientRequest);
             IngredientCategory ingredientCategory = ingredientCategoryService.findById(
-                    dtoIngredientRequest.getIngredientCategoryId());
+                    dtoIngredientRequest.ingredientCategoryId());
             ingredient.setIngredientCategory(ingredientCategory);
             return ingredientMapper.toDtoIngredientResponse(ingredientRepository.save(ingredient));
         } catch (DataIntegrityViolationException e) {
@@ -63,7 +63,7 @@ public class IngredientServiceImpl implements IIngredientService {
     public void updateNameAndCategoryId(DtoIngredientRequest dtoIngredientRequest, Long id) {
         try {
             ingredientRepository.updateNameAndCategoryId(
-                    id, dtoIngredientRequest.getName(), dtoIngredientRequest.getIngredientCategoryId());
+                    id, dtoIngredientRequest.name(), dtoIngredientRequest.ingredientCategoryId());
         } catch (DataIntegrityViolationException e) {
             throw new RuntimeException("Ingredient already exists");
         } catch (Exception e) {
