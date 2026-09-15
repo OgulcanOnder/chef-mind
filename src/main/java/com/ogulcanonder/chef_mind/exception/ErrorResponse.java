@@ -6,9 +6,9 @@ public class ErrorResponse {
     private LocalDateTime timestamp;
     private int status;
     private String error;
-    private String message;
+    private Object message;
 
-    public ErrorResponse(LocalDateTime timestamp, int status, String error, String message) {
+    public ErrorResponse(LocalDateTime timestamp, int status, String error, Object message) {
 
         this.timestamp = timestamp;
         this.status = status;
@@ -40,11 +40,11 @@ public class ErrorResponse {
         this.error = error;
     }
 
-    public String getMessage() {
+    public Object getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(Object message) {
         this.message = message;
     }
 }

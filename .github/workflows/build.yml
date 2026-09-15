@@ -28,4 +28,6 @@ jobs:
           restore-keys: maven-
 
       - name: Maven build
+        env:
+          JWT_SECRET: ${{secrets.JWT_SECRET}}
         run: mvn -B clean install -U

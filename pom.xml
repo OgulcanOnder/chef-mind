@@ -15,6 +15,7 @@
     <description>Choose your products and learn your meal.</description>
     <properties>
         <java.version>21</java.version>
+        <jwt.version>0.13.0</jwt.version>
     </properties>
     <dependencies>
         <dependency>
@@ -81,6 +82,21 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jwt.version}</version>
         </dependency>
     </dependencies>
     <build>
